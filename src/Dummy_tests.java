@@ -16,14 +16,26 @@ public class Dummy_tests extends TestClass {
     /**
      * This method tests that a test can pass.
      */
-    public Test<String> dummyTestPassed() {
-        return new Test<String>("Dummy test SHOULD PASS", "Dummy", "Dummy", true);
+    public Test dummyTestPassed() {
+        TestForEquality<String> test = new TestForEquality<String>();
+        test.setDescription("Dummy test SHOULD PASS");
+        test.setActual("Dummy");
+        test.setExpected("Dummy");
+        test.setTestResult(true);
+
+        return test;
     }
 
     /**
-     * This method tests that a test can fail.
+     * This method is intended to tests that a test can fail.
      */
-    public Test<String> dummyTestFailed() {
-        return new Test<String>("Dummy test SHOULD FAIL", "Dummy", "Not Dummy", false);
+    public Test dummyTestFailed() {
+        TestForEquality<String> test = new TestForEquality<String>();
+        test.setDescription("Dummy test SHOULD FAIL");
+        test.setActual("Dummy");
+        test.setExpected("Not dummy");
+        test.setTestResult(false);
+
+        return test;
     }
 }

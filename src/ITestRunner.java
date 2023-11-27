@@ -8,5 +8,6 @@
  */
 
 public interface ITestRunner {
+    public void printTestResults();
     public void Test(Class<? extends TestClass> testClass);
 }
