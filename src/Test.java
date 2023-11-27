@@ -55,6 +55,10 @@ public class Test {
         this.testResult = testResult;
     }
 
+    public void setAdditionalResult(boolean testResult) {
+        this.testResult = this.testResult && testResult;
+    }
+
     /**
      * This method returns a string representation of the test.
      * 

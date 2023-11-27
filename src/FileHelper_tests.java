@@ -1,13 +1,13 @@
-import java.nio.file.Paths;
-import java.util.ArrayList;
-
 /**
  * FileReader_tests.java
  * 
  * This class is used to test the FileReader class.
  * 
- * @author Jonathan Buchner Nov 2023.a
+ * @author Jonathan Buchner Nov 2023.
  */
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
 public class FileHelper_tests extends TestClass {
     private final String testFileName = Paths.get("", "test.md").toString();
 

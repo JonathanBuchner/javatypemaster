@@ -110,4 +110,54 @@ public class Challenge {
     public void setText(String text) {
         this.text = text;
     }
+
+    // Methods
+
+    /**
+     * Checks if the UUID of the challenge is set.
+     * 
+     * @return True if the UUID of the challenge is set, false otherwise.
+     */
+    public boolean idIsSet() {
+        return id != null;
+    }
+
+    /**
+     * Checks if the name of the challenge is set.
+     * 
+     * @return True if the name of the challenge is set, false otherwise.
+     */ 
+    public boolean nameIsSet() {
+        return name != null;
+    }
+
+    /**
+     * Checks if the description of the challenge is set.
+     * 
+     * @return True if the description of the challenge is set, false otherwise.
+     */
+    public boolean descriptionIsSet() {
+        return description != null;
+    }
+
+    /**
+     * Checks if the text of the challenge is set.
+     * 
+     * @return True if the text of the challenge is set, false otherwise.
+     */
+    public boolean textIsSet() {
+        return text != null;
+    }
+
+    /**
+     * Checks if the challenge is valid.
+     * 
+     * @return True if the challenge is valid, false otherwise.
+     */
+    public boolean isValid() {
+        return idIsSet() 
+            && nameIsSet() 
+            && descriptionIsSet() 
+            && textIsSet();
+    }
 }
