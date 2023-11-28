@@ -28,6 +28,7 @@ public final class Parser {
      */
     public Challenge parseChallenge(ArrayList<String> fileContents) {
         Challenge challenge = new Challenge();
+        
         for (String line : fileContents) {
             parsedChallengeLine(line, challenge);
         }
@@ -68,7 +69,7 @@ public final class Parser {
         String[] fields = line.split(ChallengeResult.getDeliminator());
         
         if (fields.length != 6) {
-            throw new IllegalArgumentException("The line is not a valid challenge result.");
+            throw new IllegalArgumentException("The row does not have the right number of entries.");
         }
 
         // Parse the fields

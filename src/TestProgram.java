@@ -11,7 +11,10 @@ public class TestProgram {
     private static void Tests(ITestRunner testRunner) {
         testRunner.Test(Dummy_tests.class);
         testRunner.Test(FileHelper_tests.class);
-        testRunner.Test(Parser_challenge_tests.class);
+        testRunner.Test(Parser_Challenge_tests.class);
+        testRunner.Test(Parser_ChallengeResult_tests.class);
+        testRunner.Test(Comparer_tests.class);
+
 
         testRunner.printTestResults();
     }

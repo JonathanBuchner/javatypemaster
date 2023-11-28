@@ -20,6 +20,18 @@ public final class Assert {
     }
 
     /**
+     * This method tests equality between two integers.
+     * 
+     * @param expected The expected response.
+     * @param actual The actual response.      
+     * @return True if the expected and actual responses are equal, false 
+     *         otherwise.
+     */
+    public static boolean areEqual(int expected, int actual) {
+        return expected == actual;
+    }
+
+    /**
      * This method tests equality between two strings.
      * 
      * @param expected The expected response.

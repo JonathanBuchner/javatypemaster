@@ -37,7 +37,7 @@ public final class ConsoleTestRunner implements ITestRunner {
         System.out.println("Test results:");
         System.out.println("--------------------------------------------------\n");
         System.out.println(ANSI_GREEN + "Passed: " + testPassedCount + ANSI_RESET);
-        System.out.println(ANSI_RED + "Failed: " + testFailedCount + " (One fail is expected)" + ANSI_RESET);
+        System.out.println(ANSI_RED + "Failed: " + testFailedCount + " (one fail is expected)" + ANSI_RESET);
     }
     
     // Public methods

@@ -1,7 +1,3 @@
-import java.sql.Date;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 /**
  * ChallengeResult.java
  * 
@@ -15,8 +11,12 @@ import java.util.UUID;
  * There are better approaches, but I thought this one worked in this case.
  */
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+
 public class ChallengeResult {
-    private static final String deliminator = ",^-";
+    private static final String deliminator = "~!~"; // ,^- 
     private UUID id;
     private Challenge challenge;
     private LocalDateTime dateCompleted;
