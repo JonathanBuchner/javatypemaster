@@ -8,13 +8,14 @@
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.UUID;
+import javax.swing.JOptionPane;
 
 public class GameManager {
     private final String challengeFilesPath = "../data/challenges/";
     private final String challengeResultsPath = "../data/data.csv";
 
     private Parser parser;
+    private Display display;
     private ArrayList<ChallengeResult> challengeResults;
     private ArrayList<HighScore> highScores;
     private ArrayList<Challenge> challenges;
@@ -26,18 +27,40 @@ public class GameManager {
      */
     public GameManager() { 
         parser = new Parser();
+        display = new Display();
     }
 
     public void begin() {
 
-        // Get the users name.
+        // Introduce the game
+        int agreement = display.introduceGame();
+
+        // Close game if user does not agree to terms.
+        if (agreement != JOptionPane.YES_OPTION) {
+            display.informMustAgree();
+            System.exit(0);
+        }
+
+        // Get the user's name.
+        firstName = display.getFirstName();
+        lastName = display.getLastName();
+
+        if (firstName == null || firstName == "" || lastName == null || lastName == "") {
+            display.informMustAgree();
+            System.exit(0);
+        }
 
         // Get the challenges.
         try {
             challenges = populateChallenges(challengeFilesPath);
+
+            if (challenges.size() == 0) {
+                throw new Exception("No challenges found.");
+            }
         } catch (Exception e) {
             System.out.println("Failed to populate challenges.");
             System.out.println("Error: " + e.getMessage());
+            System.exit(0);
         }
 
         // Get the challenge results.
@@ -50,22 +73,12 @@ public class GameManager {
 
         // Get the high scores.
         try {
-            // Get ID's of challenges
-            ArrayList<UUID> challengeIds = new ArrayList<UUID>();
-            
-            for (Challenge challenge : challenges) {
-                challengeIds.add(challenge.getId());
-            }
-
-            highScores = parser.getHighScores(challengeResults, null, firstName, lastName)
+            highScores = parser.getHighScores(challengeResults, challenges, firstName, lastName);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
         
-        
-
-        Display display = new Display();
-        display.initialize(highScores);
+        display.initialize(highScores, firstName, lastName);
     }
 
 
@@ -212,9 +225,15 @@ public class GameManager {
         ArrayList<File> challengeFiles = FileHelper.getFilesInDirectory(challengeFilesPath);
         
         for (File challengeFile : challengeFiles) {
-            ArrayList<String> challengeFileContents = FileHelper.readFile(challengeFile.getPath());
-            Challenge challenge = parser.parseChallenge(challengeFileContents);
-            challenges.add(challenge);
+            try { 
+                ArrayList<String> challengeFileContents = FileHelper.readFile(challengeFile);
+                Challenge challenge = parser.parseChallenge(challengeFileContents);
+                challenges.add(challenge);
+            }
+            catch (Exception e) {
+                System.out.println("Failed to load challenge.");
+                System.out.println("Error: " + e.getMessage());
+            }
         }
 
         return challenges;

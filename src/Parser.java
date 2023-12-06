@@ -77,11 +77,11 @@ public final class Parser {
     }
     
 
-    public ArrayList<HighScore> getHighScores(ArrayList<ChallengeResult> challengeResults, ArrayList<UUID> challengeIds, String firstName, String lastName) {
+    public ArrayList<HighScore> getHighScores(ArrayList<ChallengeResult> challengeResults, ArrayList<Challenge> challenges, String firstName, String lastName) {
         HashMap<UUID,HighScore> highScores = new HashMap<UUID,HighScore>();
 
-        for (UUID challengeId : challengeIds) {
-            highScores.put(challengeId, new HighScore(challengeId, "Unavailable", "Unknown", 0, firstName, 0));
+        for (Challenge challenge : challenges) {
+            highScores.put(challenge.getId(), new HighScore(challenge.getId(), challenge.getName(), "None", 0, firstName, 0));
         }
 
         for (ChallengeResult challengeResult : challengeResults) {

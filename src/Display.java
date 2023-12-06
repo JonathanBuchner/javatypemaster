@@ -15,6 +15,7 @@
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class Display {
@@ -28,9 +29,57 @@ public class Display {
     }
 
     /**
+     * Introduce the game.
+     *
+     * @return agreement
+     */
+    public int introduceGame() {
+        String message = "Welcome to Master Typer.\n\n" +
+            "The game will present you with a java typing challenges.  You may select a challenge and try to get the best score!\n\n" +
+            "Master typer stores your typing results locally on this computer. An updated version of this program may delete all previous data and ask for permission to collect future typing data for comparing student typing speeds to class performance.\n\n" +
+            "Do you agree to play?";
+
+        return JOptionPane.showConfirmDialog(null, message, "Master Typer", JOptionPane.YES_NO_OPTION);
+    }
+
+    /**
+     * Ask for the users first name.
+     * 
+     * @return The users first name.
+     */
+    public String getFirstName() {
+        return JOptionPane.showInputDialog (null, "What's your first name?");
+    }
+
+    /**
+     * Ask for the users last name.
+     * 
+     * @return The users last name.
+     */
+    public String getLastName() {
+        return JOptionPane.showInputDialog (null, "What's your last name?");
+    }
+
+    /**
+     * Warn the user that a failure to supply a name will not allow them to play
+     * the game.
+     */
+    public void informMustAgree() {
+        JOptionPane.showMessageDialog(null, "You must agree to play the game to play");
+    }
+
+    /**
+     * Warn the user that a failure to supply a name will not allow them to play.
+     */
+    public void informMustSupplyName() {
+        JOptionPane.showMessageDialog(null, "You must supply a first and last name to play");
+    }
+
+
+    /**
      * This method will create the main window.
      */
-    public void initialize(ArrayList<HighScore> highScores) {    
+    public void initialize(ArrayList<HighScore> highScores, String firstName, String lastName) {    
         display.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         display.setSize(900, 700);
         display.setLayout (new BorderLayout());
@@ -40,12 +89,12 @@ public class Display {
         String title = "Master Typer";
         String tagTop = "Become a master typer and master computer science!";
         String challenge = "Challenges";
-        String warning = "Master typer stores your typing results locally on this computer. An updated version of this program may delete all previous data and ask for permission to collect future typing data for comparing student typing speeds to class performance.  This is a student project.";
+        String warning = "Master typer stores your typing results locally on this computer. An updated version of this program may delete all previous data and ask for permission to collect future typing data for comparing student typing speeds to class performance.";
         String credit = "Created by prospective graduate student Jonathan Buchner during fall term 2023.";
 
         // Get panels
         JPanel header = createHeaderPanel(title, tagTop);
-        JPanel center = createCenterPanel(challenge, highScores);
+        JPanel center = createCenterPanel(challenge, highScores, firstName, lastName);
         JPanel footer = createFooterPanel(warning, credit);
         
         // Add panels to the display.
@@ -146,7 +195,7 @@ public class Display {
      * 
      * @return The center panel.
      */
-    private JPanel createCenterPanel(String challenge, ArrayList<HighScore> highScores) {
+    private JPanel createCenterPanel(String challenge, ArrayList<HighScore> highScores, String firstName, String lastName) {
         // Create the center panel.
         JPanel center = new JPanel(new GridBagLayout());
         center.setBackground(Color.WHITE);
@@ -159,18 +208,27 @@ public class Display {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(10, 20, 10, 20);
 
+        // Indicate player:
+        JLabel playerLabel = new JLabel("Player: " + firstName + " " + lastName);
+        playerLabel.setFont(new Font("Verdana", Font.ITALIC, 14));
+        playerLabel.setForeground(new Color(80, 80, 80));
+
         // Create challenge label
         JLabel challengeLabel = new JLabel(challenge);
         challengeLabel.setFont(new Font("Verdana", Font.BOLD, 24));
         challengeLabel.setForeground(new Color(40, 40, 40));
 
         // Add labels to center panel.
+        center.add(playerLabel, gbc);
         center.add(challengeLabel, gbc);
 
         // Add rows.
         for (HighScore highScore : highScores) {
             center.add(getChallengeRow(highScore), gbc);
         }
+
+        // Add exit button.
+        center.add(new ExitButton());
 
         return center;
     }
@@ -256,5 +314,30 @@ class CustomTextArea extends JTextArea {
         setOpaque(false);
         setEditable(false);
         setFocusable(false);
+    }
+}
+
+/**
+ * Exit button.
+ * 
+ * This class will create an exit button.
+ */
+class ExitButton extends JButton {
+    public ExitButton() {
+        super("Exit");
+        setFont(new Font("Verdana", Font.PLAIN, 18));
+        setForeground(new Color(80, 80, 80));
+        setFocusable(false);
+
+        // Add action listeners
+        addActionListener(new ButtonListener());
+    }
+
+    class ButtonListener implements ActionListener
+    {
+        public void actionPerformed (ActionEvent e)
+        {
+            System.exit(0);
+        }
     }
 }
