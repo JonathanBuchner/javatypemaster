@@ -9,7 +9,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class FileHelper_tests extends TestClass {
-    private final String testFileName = Paths.get("", "test.md").toString();
+    private final String testFileName = Paths.get("../testData/test.md").toString();
+
 
     public FileHelper_tests() {
         super("FileReader Tests");

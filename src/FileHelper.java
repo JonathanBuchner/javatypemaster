@@ -12,9 +12,37 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public final class FileHelper {
+
+    /**
+     * Get files in directory.
+     */
+    public static ArrayList<File> getFilesInDirectory(String directoryPath) throws Exception {
+        ArrayList<File> files = new ArrayList<File>();
+        File directory = validateFilePath(directoryPath);
+
+        if (!directory.exists()) {
+            throw new IllegalArgumentException("Directory " + directoryPath + " does not exist.");
+        }
+
+        if (!directory.isDirectory()) {
+            throw new IllegalArgumentException("Directory " + directoryPath + " is not a directory.");
+        }
+
+        if (!directory.canRead()) {
+            throw new IllegalArgumentException("Directory " + directoryPath + " cannot be read.");
+        }
+
+        for (File file : directory.listFiles()) {
+            files.add(file);
+        }
+
+        return files;
+    }
+
     /**
      * Creates a file.
      * 
@@ -50,12 +78,24 @@ public final class FileHelper {
     /**
      * Reads a file.
      * 
-     * @param filePath
+     * @param filePath The file path.
      * @return The file contents.
      */
     public static ArrayList<String> readFile(String filePath) throws Exception {
-        ArrayList<String> fileContents = new ArrayList<String>();
         File file = getFile(filePath);
+        
+        return readFile(file);
+    }
+
+    /**
+     * Read a file.
+     * 
+     * @param file The file.
+     * 
+     * @return The file contents.
+     */
+    public static ArrayList<String> readFile(File file) throws Exception {
+        ArrayList<String> fileContents = new ArrayList<String>();
         Scanner inputFile = new Scanner(file);
 
         while (inputFile.hasNextLine()) {

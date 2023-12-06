@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class Parser {
     /**
@@ -31,6 +32,25 @@ public final class Parser {
         
         for (String line : fileContents) {
             parsedChallengeLine(line, challenge);
+        }
+
+        // Set the challenge text
+        int i = 0;
+        while(!fileContents.get(i).startsWith("```java")) {
+            i++;
+        }
+
+        challenge.setText("");
+        i++;
+
+        while(!fileContents.get(i).endsWith("```")) {
+            challenge.setText(challenge.getText() + fileContents.get(i) + "\n");
+            
+            if (i >= fileContents.size() - 1) {
+                throw new IllegalArgumentException("The challenge file is not valid.");
+            }
+
+            i++;
         }
 
         if (!challenge.isValid()) {
@@ -54,6 +74,33 @@ public final class Parser {
         }
 
         return challengeResults;
+    }
+    
+
+    public ArrayList<HighScore> getHighScores(ArrayList<ChallengeResult> challengeResults, ArrayList<UUID> challengeIds, String firstName, String lastName) {
+        HashMap<UUID,HighScore> highScores = new HashMap<UUID,HighScore>();
+
+        for (UUID challengeId : challengeIds) {
+            highScores.put(challengeId, new HighScore(challengeId, "Unavailable", "Unknown", 0, firstName, 0));
+        }
+
+        for (ChallengeResult challengeResult : challengeResults) {
+            UUID challengeId = challengeResult.getChallenge().getId();
+            HighScore highScore = highScores.get(challengeId);
+            
+            if (challengeResult.getSecondsToComplete() < highScore.getHighScore() || highScore.getHighScore() == 0) {
+                highScore.setHighScore(challengeResult.getSecondsToComplete());
+                highScore.setHighFirstName(challengeResult.getFirstName());
+            }
+
+            if (challengeResult.getFirstName().equals(firstName) && challengeResult.getLastName().equals(lastName)) {
+                if (challengeResult.getSecondsToComplete() < highScore.getYourHighScore() || highScore.getYourHighScore() == 0) {
+                    highScore.setYourHighScore(challengeResult.getSecondsToComplete());
+                }
+            }
+        }   
+
+        return new ArrayList<HighScore>(highScores.values());
     }
 
     // Private methods
@@ -115,7 +162,7 @@ public final class Parser {
         if (line.startsWith("UUID: ") && !challenge.idIsSet()) {
             
             // Parse the UUID
-            challenge.setId(UUID.fromString(line.substring(6).trim()));
+                challenge.setId(UUID.fromString(line.substring(6).trim()));
             
         } else if (line.startsWith("# ") && !challenge.nameIsSet()) {
             
@@ -127,8 +174,6 @@ public final class Parser {
             // Parse the description
             challenge.setDescription(line.substring(1, line.length() - 1).trim());
 
-        } else if (line.startsWith("```") && line.endsWith("```") && !challenge.textIsSet()) {
-            challenge.setText(line.substring(3, line.length() - 3).trim());
         } 
         // Other lines are ignored
     }

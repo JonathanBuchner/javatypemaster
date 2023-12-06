@@ -175,11 +175,12 @@ public class ChallengeResult {
      * @return A string representation of the challenge result.
      */
     public String toString() {
-        return this.id.toString() + this.deliminator +
-            this.challenge.getId().toString() + this.deliminator +
-            this.dateCompleted.toString() + this.deliminator +
-            this.firstName + this.deliminator +
-            this.lastName + this.deliminator +
+        return ChallengeResult.deliminator +
+            this.id.toString() + ChallengeResult.deliminator +
+            this.challenge.getId().toString() + ChallengeResult.deliminator +
+            this.dateCompleted.toString() + ChallengeResult.deliminator +
+            this.firstName + ChallengeResult.deliminator +
+            this.lastName + ChallengeResult.deliminator +
             this.secondsToComplete;
     }
 }

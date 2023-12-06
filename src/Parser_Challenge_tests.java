@@ -4,6 +4,13 @@
  * Contains tests for the ParserHelper class.
  * 
  * @author Jonathan Buchner Nov 2023.
+ * 
+ * Notes: Consider adding tests for testing the challenge text, including:
+ * - Empty text
+ * - Text with no code
+ * - Text with complex code
+ * - Text with code that has no closing ```
+ * - Text with code that has no opening ```java
  */
 
 import java.util.ArrayList;
@@ -23,14 +30,18 @@ public class Parser_Challenge_tests extends TestClass {
         String id = "UUID: 123e4567-e89b-12d3-a456-426614174000";
         String name = "# Test Challenge";
         String description = "*This is a test challenge.*";
-        String text = "```This is the text of the challenge.```";
-
+        String text = "```java";
+        String text1 = "This is the text of the challenge.";
+        String text2 = "```";
+        
         try {
             ArrayList<String> fileContents = new ArrayList<String>();
             fileContents.add(id);
             fileContents.add(name);
             fileContents.add(description);
             fileContents.add(text);
+            fileContents.add(text1);
+            fileContents.add(text2);
 
             Parser parser = new Parser();
             Challenge challenge = parser.parseChallenge(fileContents);
@@ -38,7 +49,7 @@ public class Parser_Challenge_tests extends TestClass {
             test.setTestResult(challenge.getId().equals(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")));
             test.setAdditionalResult(Assert.areEqual("Test Challenge", challenge.getName()));
             test.setAdditionalResult(Assert.areEqual("This is a test challenge.", challenge.getDescription()));
-            test.setAdditionalResult(Assert.areEqual("This is the text of the challenge.", challenge.getText()));
+            test.setAdditionalResult(Assert.areEqual("This is the text of the challenge.\n", challenge.getText()));
 
             return test;
         } catch (Exception e) {
@@ -58,7 +69,10 @@ public class Parser_Challenge_tests extends TestClass {
         String id = "UUID: 123e4567-e89b-12d3-a456-426614174000";
         String name = "# Test Challenge";
         String description = "*This is a test challenge.*";
-        String text = "```This is the text of the challenge.```";
+        String text = "```java";
+        String text1 = "This is the text of the challenge.";
+        String text2 = "```";
+        
 
         try {
             ArrayList<String> fileContents = new ArrayList<String>();
@@ -66,6 +80,8 @@ public class Parser_Challenge_tests extends TestClass {
             fileContents.add(name);
             fileContents.add(description);
             fileContents.add(text);
+            fileContents.add(text1);
+            fileContents.add(text2);
             fileContents.add(id + " JUNK");
             fileContents.add(name + " JUNK");
             fileContents.add(description + " JUNK");
@@ -78,7 +94,7 @@ public class Parser_Challenge_tests extends TestClass {
             test.setTestResult(challenge.getId().equals(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")));
             test.setAdditionalResult(Assert.areEqual("Test Challenge", challenge.getName()));
             test.setAdditionalResult(Assert.areEqual("This is a test challenge.", challenge.getDescription()));
-            test.setAdditionalResult(Assert.areEqual("This is the text of the challenge.", challenge.getText()));
+            test.setAdditionalResult(Assert.areEqual("This is the text of the challenge.\n", challenge.getText()));
 
             return test;
         } catch (Exception e) {
@@ -98,7 +114,9 @@ public class Parser_Challenge_tests extends TestClass {
         String id = "UUID 123e4567-e89b-12d3-a456-426614174000";
         String name = "#Test Challenge";
         String description = "*This is a test challenge.";
-        String text = "```This is the text of the challenge.``";
+        String text = "```java";
+        String text1 = "This is the text of the challenge.";
+        String text2 = "```";
 
         try {
             ArrayList<String> fileContents = new ArrayList<String>();
@@ -106,6 +124,8 @@ public class Parser_Challenge_tests extends TestClass {
             fileContents.add(name);
             fileContents.add(description);
             fileContents.add(text);
+            fileContents.add(text1);
+            fileContents.add(text2);
 
 
             Parser parser = new Parser();
@@ -138,13 +158,17 @@ public class Parser_Challenge_tests extends TestClass {
         String id = "UUID: 123e4567-e89b-12d3-a456-426614174000~"; // Bad UUID. Invalid character at the end.
         String name = "# Test Challenge";
         String description = "*This is a test challenge.*";
-        String text = "```This is the text of the challenge.```";
+        String text = "```java";
+        String text1 = "This is the text of the challenge.";
+        String text2 = "```";
 
         ArrayList<String> fileContents = new ArrayList<String>();
         fileContents.add(id);
         fileContents.add(name);
         fileContents.add(description);
         fileContents.add(text);
+        fileContents.add(text1);
+        fileContents.add(text2);
 
         try {
             Parser parser = new Parser();
@@ -154,7 +178,7 @@ public class Parser_Challenge_tests extends TestClass {
             return test; 
         } catch (Exception e) {
             test.setException(e);
-            test.setTestResult(e instanceof IllegalArgumentException); // This is the expected exception.
+            test.setTestResult(e instanceof NumberFormatException); // This is the expected exception.
 
             return test;
         }
