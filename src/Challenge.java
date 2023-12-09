@@ -13,6 +13,7 @@ public class Challenge {
     private String name;
     private String description;
     private String text;
+    private HighScore highScore;
 
     /**
      * Default constructor.
@@ -71,6 +72,15 @@ public class Challenge {
      */
     public String getText() {
         return text;
+    }
+
+    /**
+     * Gets the high score of the challenge.
+     * 
+     * @return The high score of the challenge.
+     */
+    public HighScore getHighScore() {
+        return highScore;
     }
 
     // Setters
@@ -159,5 +169,12 @@ public class Challenge {
             && nameIsSet() 
             && descriptionIsSet() 
             && textIsSet();
+    }
+
+    /**
+     * Set high score
+     */
+    public void setHighScore(HighScore highScore) {
+        this.highScore = highScore;
     }
 }

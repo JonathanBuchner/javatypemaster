@@ -15,9 +15,9 @@ public class GameManager {
     private final String challengeResultsPath = "../data/data.csv";
 
     private Parser parser;
+    private MusicPlayer musicPlayer;
     private Display display;
     private ArrayList<ChallengeResult> challengeResults;
-    private ArrayList<HighScore> highScores;
     private ArrayList<Challenge> challenges;
     private String firstName;
     private String lastName;
@@ -27,28 +27,36 @@ public class GameManager {
      */
     public GameManager() { 
         parser = new Parser();
+        musicPlayer = new MusicPlayer();
         display = new Display();
     }
 
+    /**
+     * Begin the game.
+     */
     public void begin() {
 
-        // Introduce the game
-        int agreement = display.introduceGame();
+        // // Introduce the game
+        // int agreement = display.introduceGame();
 
-        // Close game if user does not agree to terms.
-        if (agreement != JOptionPane.YES_OPTION) {
-            display.informMustAgree();
-            System.exit(0);
-        }
+        // // Close game if user does not agree to terms.
+        // if (agreement != JOptionPane.YES_OPTION) {
+        //     display.informMustAgree();
+        //     System.exit(0);
+        // }
 
-        // Get the user's name.
-        firstName = display.getFirstName();
-        lastName = display.getLastName();
+        // // Get the user's name.
+        // firstName = display.getFirstName();
+        // lastName = display.getLastName();
 
-        if (firstName == null || firstName == "" || lastName == null || lastName == "") {
-            display.informMustAgree();
-            System.exit(0);
-        }
+        // // Close game if user does not enter a name.
+        // if (firstName.isEmpty() || lastName.isEmpty()) {
+        //     display.informMustSupplyName();
+        //     System.exit(0);
+        // }
+
+        firstName = "Jonathan";
+        lastName = "Buchner";
 
         // Get the challenges.
         try {
@@ -73,12 +81,16 @@ public class GameManager {
 
         // Get the high scores.
         try {
-            highScores = parser.getHighScores(challengeResults, challenges, firstName, lastName);
+            parser.setHighScores(challengeResults, challenges, firstName, lastName);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-        
-        display.initialize(highScores, firstName, lastName);
+
+        // Play the intro music.
+        // musicPlayer.playIntro();
+
+        // Display the main menu.
+        display.initialize(challenges, firstName, lastName);
     }
 
 
@@ -100,15 +112,6 @@ public class GameManager {
      */
     public ArrayList<ChallengeResult> getChallengeResults() {
         return challengeResults;
-    }
-
-    /**
-     * Get the high scores.
-     * 
-     * @return The high scores.
-     */
-    public ArrayList<HighScore> getHighScores() {
-        return highScores;
     }
 
     /**
@@ -174,15 +177,6 @@ public class GameManager {
      */
     public void setChallengeResults(ArrayList<ChallengeResult> challengeResults) {
         this.challengeResults = challengeResults;
-    }
-
-    /**
-     * Set the high scores.
-     * 
-     * @param highScores The high scores.
-     */
-    public void setHighScores(ArrayList<HighScore> highScores) {
-        this.highScores = highScores;
     }
 
     /**

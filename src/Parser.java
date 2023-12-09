@@ -76,14 +76,35 @@ public final class Parser {
         return challengeResults;
     }
     
-
-    public ArrayList<HighScore> getHighScores(ArrayList<ChallengeResult> challengeResults, ArrayList<Challenge> challenges, String firstName, String lastName) {
+    /**
+     * Set the high scores for each challenge.
+     * 
+     * This method went through several iterations. Initially, highscores were a 
+     * not a property of a challenge but rather passed around as there own 
+     * array list. I realized that this was not a good approach as I was
+     * having to match highscore id challenge ids.
+     * 
+     * An simpler approach to the below method would have been a loop inside a loop
+     * to find the high score for each challenge. However, I changed it back to using
+     * a hashmap to make it more efficient.
+     * 
+     * This method probably could be moved out of the parser class and into the
+     * challenge class, but it also works living in this parser class for this program.
+     * 
+     * @param challengeResults The challenge results.
+     * @param challenges The challenges.
+     * @param firstName The first name.
+     * @param lastName The last name.
+     */
+    public void setHighScores(ArrayList<ChallengeResult> challengeResults, ArrayList<Challenge> challenges, String firstName, String lastName) {
         HashMap<UUID,HighScore> highScores = new HashMap<UUID,HighScore>();
 
+        // Get a high object for each challenge that is is put in a hashmap.
         for (Challenge challenge : challenges) {
-            highScores.put(challenge.getId(), new HighScore(challenge.getId(), challenge.getName(), "None", 0, firstName, 0));
+            highScores.put(challenge.getId(), new HighScore(challenge.getId(), challenge.getName(), "*NEW*", 0, firstName, 0));
         }
 
+        // Update the high scores with information from the challenge results.
         for (ChallengeResult challengeResult : challengeResults) {
             UUID challengeId = challengeResult.getChallenge().getId();
             HighScore highScore = highScores.get(challengeId);
@@ -98,9 +119,12 @@ public final class Parser {
                     highScore.setYourHighScore(challengeResult.getSecondsToComplete());
                 }
             }
-        }   
+        }
 
-        return new ArrayList<HighScore>(highScores.values());
+        // Put the high score into a challenge.
+        for (Challenge challenge : challenges) {
+            challenge.setHighScore(highScores.get(challenge.getId()));
+        }
     }
 
     // Private methods

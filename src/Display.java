@@ -19,13 +19,14 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class Display {
-    private JFrame display;
+    private JFrame frame;
+    private ChallengeDisplay challengeDisplay;
     
     /**
      * Default constructor.
      */
     public Display() {
-        display = new JFrame("Master Typer");
+        frame = new JFrame();
     }
 
     /**
@@ -35,8 +36,8 @@ public class Display {
      */
     public int introduceGame() {
         String message = "Welcome to Master Typer.\n\n" +
-            "The game will present you with a java typing challenges.  You may select a challenge and try to get the best score!\n\n" +
-            "Master typer stores your typing results locally on this computer. An updated version of this program may delete all previous data and ask for permission to collect future typing data for comparing student typing speeds to class performance.\n\n" +
+            "You will be presented with a java typing challenges.  Select a challenge and try to get the best score!\n\n" +
+            "Master typer stores your typing results locally on this computer.\n\n" +
             "Do you agree to play?";
 
         return JOptionPane.showConfirmDialog(null, message, "Master Typer", JOptionPane.YES_NO_OPTION);
@@ -75,34 +76,33 @@ public class Display {
         JOptionPane.showMessageDialog(null, "You must supply a first and last name to play");
     }
 
-
     /**
      * This method will create the main window.
      */
-    public void initialize(ArrayList<HighScore> highScores, String firstName, String lastName) {    
-        display.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        display.setSize(900, 700);
-        display.setLayout (new BorderLayout());
-        display.setResizable(false);
+    public void initialize(ArrayList<Challenge> challenges, String firstName, String lastName) {    
+        frame.setTitle("Master Typer");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setMinimumSize(new Dimension(900, 700));
+        frame.setLayout (new BorderLayout());
 
         // Set english strings.
         String title = "Master Typer";
         String tagTop = "Become a master typer and master computer science!";
-        String challenge = "Challenges";
+        String challengeTitle = "Challenges";
         String warning = "Master typer stores your typing results locally on this computer. An updated version of this program may delete all previous data and ask for permission to collect future typing data for comparing student typing speeds to class performance.";
         String credit = "Created by prospective graduate student Jonathan Buchner during fall term 2023.";
 
         // Get panels
         JPanel header = createHeaderPanel(title, tagTop);
-        JPanel center = createCenterPanel(challenge, highScores, firstName, lastName);
+        JPanel center = createCenterPanel(challengeTitle, challenges, firstName, lastName);
         JPanel footer = createFooterPanel(warning, credit);
         
         // Add panels to the display.
-        display.add(header, BorderLayout.NORTH);
-        display.add(center, BorderLayout.CENTER);
-        display.add(footer, BorderLayout.SOUTH);
+        frame.add(header, BorderLayout.NORTH);
+        frame.add(center, BorderLayout.CENTER);
+        frame.add(footer, BorderLayout.SOUTH);
 
-        display.setVisible(true);
+        frame.setVisible(true);
     }
 
     /**
@@ -195,7 +195,7 @@ public class Display {
      * 
      * @return The center panel.
      */
-    private JPanel createCenterPanel(String challenge, ArrayList<HighScore> highScores, String firstName, String lastName) {
+    private JPanel createCenterPanel(String challengeTitle, ArrayList<Challenge> challenges, String firstName, String lastName) {
         // Create the center panel.
         JPanel center = new JPanel(new GridBagLayout());
         center.setBackground(Color.WHITE);
@@ -214,37 +214,50 @@ public class Display {
         playerLabel.setForeground(new Color(80, 80, 80));
 
         // Create challenge label
-        JLabel challengeLabel = new JLabel(challenge);
+        JLabel challengeLabel = new JLabel(challengeTitle);
         challengeLabel.setFont(new Font("Verdana", Font.BOLD, 24));
         challengeLabel.setForeground(new Color(40, 40, 40));
 
         // Add labels to center panel.
         center.add(playerLabel, gbc);
         center.add(challengeLabel, gbc);
+        center.add(getChallengeTitleRow(), gbc);
 
-        // Add rows.
-        for (HighScore highScore : highScores) {
-            center.add(getChallengeRow(highScore), gbc);
+        // Add challenge rows.
+        for (Challenge challenge : challenges) {
+            center.add(getChallengeRow(challenge), gbc);
         }
-
-        // Add exit button.
-        center.add(new ExitButton());
 
         return center;
     }
+    /**
+     * Get challenge title row
+     * 
+     * @return The challenge title row.
+     */
+    private JPanel getChallengeTitleRow() {
+        JPanel row = getRowPanel();
         
+        // Add rows.
+        row.add(new CustomTextAreaRowHeader("Challenge"));
+        row.add(new CustomTextAreaRowHeader("Leader"));
+        row.add(new CustomTextAreaRowHeader("Best score"));       
+        row.add(new CustomTextAreaRowHeader("Your best"));
+
+        return row;
+    }
+    
     /**
      * This method will create the challenge panel to display as row in the challenge.
      * 
      * @param highScore The high score to display.
      * @return The challenge panel.
      */
-    private JPanel getChallengeRow(HighScore highScore) {
-        JPanel row = new JPanel(new BorderLayout());
-        row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
-        row.setBackground(Color.WHITE);
-        
-        // Set High Scores
+    private JPanel getChallengeRow(Challenge challenge) {
+        HighScore highScore = challenge.getHighScore();
+        JPanel row = getRowPanel();
+       
+        // Set High Scores for zero
         String theHighScore = highScore.getHighScore() == 0 ? 
             "--" :
             String.valueOf(highScore.getHighScore());
@@ -253,14 +266,19 @@ public class Display {
             String.valueOf(highScore.getYourHighScore());
 
         // Add rows.
-        row.add(new CustomTextArea(highScore.getChallengeName()));
+        row.add(new CustomTextAreaChallenge(challenge)); // This is needed to make the challenge open.
         row.add(new CustomTextArea(highScore.getHighFirstName()));
-        row.add(new CustomTextArea(theHighScore));
-        
-        row.add(new CustomTextArea(highScore.getYourFirstName()));
-
-        
+        row.add(new CustomTextArea(theHighScore));       
         row.add(new CustomTextArea(yourHighScore));
+
+        return row;
+    }
+
+    private JPanel getRowPanel() {
+         // Create the challenge panel.
+        JPanel row = new JPanel(new BorderLayout());
+        row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+        row.setBackground(Color.WHITE);
 
         return row;
     }
@@ -277,6 +295,12 @@ public class Display {
         Border padding = BorderFactory.createEmptyBorder(20, 20, 20, 20);
         footerPanel.setBorder(padding);
 
+        // Button GBC
+        GridBagConstraints gbcButton = new GridBagConstraints();
+        gbcButton.gridwidth = GridBagConstraints.REMAINDER;
+        gbcButton.insets = new Insets(5, 20, 5, 20);
+
+        // Text GBC
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -292,52 +316,107 @@ public class Display {
         CustomTextArea creditLabel = new CustomTextArea(credit);
         creditLabel.setFont(new Font("Verdana", Font.PLAIN, 11));
 
+        // Add exit button.
+        footerPanel.add(new ExitButton(), gbcButton);
         footerPanel.add(footerLabel, gbc);
         footerPanel.add(creditLabel, gbc);
 
         return footerPanel;
     }   
-}
 
-/**
- * CustomTextArea.java
- * 
- * This class will create a custom text area.
- */
-class CustomTextArea extends JTextArea {
-    public CustomTextArea(String text) {
-        super(text);
-        setFont(new Font("Verdana", Font.PLAIN, 12));
-        setForeground(new Color(80, 80, 80));
-        setLineWrap(true);
-        setWrapStyleWord(true);
-        setOpaque(false);
-        setEditable(false);
-        setFocusable(false);
-    }
-}
-
-/**
- * Exit button.
- * 
- * This class will create an exit button.
- */
-class ExitButton extends JButton {
-    public ExitButton() {
-        super("Exit");
-        setFont(new Font("Verdana", Font.PLAIN, 18));
-        setForeground(new Color(80, 80, 80));
-        setFocusable(false);
-
-        // Add action listeners
-        addActionListener(new ButtonListener());
+    /**
+     * CustomTextArea.java
+     * 
+     * This class will create a custom text area.
+     */
+    class CustomTextArea extends JTextArea {
+        public CustomTextArea(String text) {
+            super(text);
+            setFont(new Font("Verdana", Font.BOLD, 12));
+            setForeground(new Color(80, 80, 80));
+            setLineWrap(true);
+            setWrapStyleWord(true);
+            setOpaque(false);
+            setEditable(false);
+            setFocusable(false);
+        }
     }
 
-    class ButtonListener implements ActionListener
-    {
-        public void actionPerformed (ActionEvent e)
+    class CustomTextAreaRowHeader extends CustomTextArea {
+        public CustomTextAreaRowHeader(String text) {
+            super(text);
+            setFont(new Font("Verdana", Font.ITALIC, 14));
+            setForeground(new Color(40, 40, 40));
+        }
+    }
+
+    class CustomTextAreaChallenge extends CustomTextArea {
+        private Challenge challenge;
+
+        public CustomTextAreaChallenge(Challenge challenge) {
+            super(challenge.getName());
+            this.challenge = challenge;
+
+            // Add action listeners
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+            addMouseListener(new OpenChallenge());
+        }
+
+        class OpenChallenge implements MouseListener {
+
+            // Implement MouseListener methods
+            public void mouseClicked(MouseEvent e) {
+                if (challengeDisplay != null) {
+                    String title = "Close Challenge";
+                    String message = "You already have a challenge open.  Do you want to close it?";
+                    
+                    int response = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+
+                    if (response == JOptionPane.NO_OPTION) {
+                        return;
+                    }
+
+                    challengeDisplay.close();
+                }
+
+                challengeDisplay = new ChallengeDisplay(challenge);
+                challengeDisplay.initialize();
+            }
+            public void mousePressed(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {
+                setForeground(new Color(10, 10, 10));
+                setFont(new Font("Verdana", Font.BOLD, 12));
+            }
+            public void mouseExited(MouseEvent e) {
+                setForeground(new Color(80, 80, 80));
+            }
+        }
+    }
+
+    /**
+     * Exit button.
+     * 
+     * This class will create an exit button.
+     */
+    class ExitButton extends JButton {
+        public ExitButton() {
+            super("Exit");
+            setFont(new Font("Verdana", Font.PLAIN, 18));
+            setForeground(new Color(80, 80, 80));
+            setFocusable(false);
+
+            // Add action listeners
+            addActionListener(new ButtonListener());
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
+
+        class ButtonListener implements ActionListener
         {
-            System.exit(0);
+            public void actionPerformed (ActionEvent e)
+            {
+                System.exit(0);
+            }
         }
     }
 }

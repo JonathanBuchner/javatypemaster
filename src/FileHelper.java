@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public final class FileHelper {
@@ -126,7 +125,7 @@ public final class FileHelper {
      * @return The file.
      * @throws IllegalArgumentException If the file path is null, empty, does not exist, is not a file, or cannot be read.
      */
-    private static File getFile(String filePath) {
+    public static File getFile(String filePath) {
         File file =  validateFilePath(filePath);
 
         if (!file.exists()) {
