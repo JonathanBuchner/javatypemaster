@@ -5,11 +5,11 @@
  * 
  * @author Jonathan Buchner Nov 2023.
  */
-public class Dummy_tests extends TestClass {
+public class Tests_Dummy extends TestClass {
     /**
      * Default constructor.
      */
-    public Dummy_tests() {
+    public Tests_Dummy() {
         super("These are dummy tests. One test should pass. One test should fail.");
     }
 

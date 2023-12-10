@@ -15,6 +15,15 @@ public class Test {
      */
     public Test() {};
 
+    /**
+     * Constructor.
+     * 
+     * @param description The description of the test.
+     */
+    public Test(String description) {
+        this.description = description;
+    }
+
     // Getters
 
     /**

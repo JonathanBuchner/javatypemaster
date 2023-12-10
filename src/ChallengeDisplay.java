@@ -9,10 +9,13 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class ChallengeDisplay {
     private Challenge challenge;
     private JFrame frame;
+    private ChallengeTextDisplay challengeTextDisplay;
+    
     /**
      * Default constructor.
      */
@@ -28,6 +31,7 @@ public class ChallengeDisplay {
     public ChallengeDisplay(Challenge challenge) {
         this();
         this.challenge = challenge;
+        this.challengeTextDisplay = new ChallengeTextDisplay(challenge.getText());
     }
 
     /**
@@ -42,7 +46,7 @@ public class ChallengeDisplay {
 
         // Set the layout
         frame.add(createHeaderPanel(), BorderLayout.NORTH);
-        frame.add(new JTextArea(), BorderLayout.CENTER);
+        frame.add(createChallengePanel(challengeTextDisplay), BorderLayout.CENTER);
         frame.add(createFooterPanel(), BorderLayout.SOUTH);
         frame.setVisible(true);
     }
@@ -74,8 +78,79 @@ public class ChallengeDisplay {
         // Add parts to the panel
         header.add(getTitlePanel(), gbc);
         header.add(getDescriptionPanel(), gbc);
+        header.add(getInstructionPanel(), gbc);
 
         return header;
+    }
+
+    /**
+     * Get the title text.
+     * 
+     * @return The title text.
+     */
+    private TextAreaChallenge getTitlePanel() {
+        TextAreaChallenge title = new TextAreaChallenge(challenge.getName());
+        title.setFont(new Font("Verdana", Font.BOLD, 36));
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        return title;
+    }
+
+    /**
+     * Get the challenge description.
+     * 
+     * @return The challenge description.
+     */
+    private TextAreaChallenge getDescriptionPanel() {
+        TextAreaChallenge description = new TextAreaChallenge(challenge.getDescription());
+        description.setFont(new Font("Verdana", Font.ITALIC, 14));
+        description.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        return description;
+    }
+
+    /**
+     * Get the challenge instructions.
+     * 
+     * @return The challenge instructions.
+     */
+    private TextAreaChallenge getInstructionPanel() {
+        String instructionText = "Type the following text as fast as you can. The timer will start when you begin typing.";
+
+        TextAreaChallenge instructions = new TextAreaChallenge(instructionText);
+        instructions.setFont(new Font("Verdana", Font.PLAIN, 12));
+        instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        return instructions;
+    }
+
+    /**
+     * Create the challenge panel.
+     * 
+     * @return The challenge panel.
+     */
+    private JPanel createChallengePanel(ChallengeTextDisplay challengeTextDisplay) {
+        JPanel challengePanel = new JPanel();
+        challengePanel.setLayout(new BoxLayout(challengePanel, BoxLayout.Y_AXIS));
+        challengePanel.setBorder(BorderFactory.createEmptyBorder(10, 80, 20, 80));
+        challengePanel.setBackground(Color.WHITE);
+
+        for (ArrayList<Word> row : challengeTextDisplay.getWordRows()) {
+            challengePanel.add(createChallengeRowPanel(row));
+        }
+
+        return challengePanel;
+    }
+
+    private JPanel createChallengeRowPanel(ArrayList<Word> row) {
+        JPanel challengeRowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        challengeRowPanel.setBackground(Color.WHITE);
+
+        for (Word word : row) {
+            challengeRowPanel.add(word);
+        }
+
+        return challengeRowPanel;
     }
 
     /**
@@ -96,74 +171,6 @@ public class ChallengeDisplay {
         footer.add(new CloseButton(), gbc);
 
         return footer;
-    }
-
-    /**
-     * Close button.
-     * 
-     * This class will create an exit button.
-     */
-    class Button extends JButton {
-        public Button(String text) {
-            super(text);
-            setFont(new Font("Verdana", Font.PLAIN, 14));
-            setForeground(new Color(80, 80, 80));
-            setFocusable(false);
-            setCursor(new Cursor(Cursor.HAND_CURSOR));
-        }
-    }
-
-    class CloseButton extends Button {
-        public CloseButton() {
-            super("Close");
-            addActionListener(new Listener());
-        }
-
-        class Listener implements ActionListener {
-            public void actionPerformed(ActionEvent e) {
-                close();
-            }
-        }
-    }
-
-    class ResetButton extends Button {
-        public ResetButton() {
-            super("Reset");
-        }
-
-        class Listener implements ActionListener {
-            public void actionPerformed(ActionEvent e) {
-                // Reset the challenge
-            }
-        }
-    }
-
-
-
-    /**
-     * Get the title text.
-     * 
-     * @return The title text.
-     */
-    private TextAreaChallenge getTitlePanel() {
-        TextAreaChallenge title = new TextAreaChallenge(challenge.getName());
-        title.setFont(new Font("Serif", Font.BOLD, 36));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        return title;
-    }
-
-    /**
-     * Get the challenge description.
-     * 
-     * @return The challenge description.
-     */
-    private TextAreaChallenge getDescriptionPanel() {
-        TextAreaChallenge description = new TextAreaChallenge(challenge.getDescription());
-        description.setFont(new Font("Serif", Font.ITALIC, 14));
-        description.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        return description;
     }
 
     // Getters
@@ -205,15 +212,64 @@ public class ChallengeDisplay {
     public void setFrame(JFrame frame) {
         this.frame = frame;
     }
-}
 
-class TextAreaChallenge extends JTextArea {
-    public TextAreaChallenge(String text) {
-        super(text);
-        setLineWrap(true);
-        setWrapStyleWord(true);
-        setOpaque(false);
-        setEditable(false);
-        setFocusable(false);
+    // Private classes
+    
+    /**
+     * Button 
+     */
+    abstract class Button extends JButton {
+        public Button(String text) {
+            super(text);
+            setFont(new Font("Verdana", Font.PLAIN, 14));
+            setForeground(new Color(80, 80, 80));
+            setFocusable(false);
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
+    }
+
+    /**
+     * Close button.
+     */
+    class CloseButton extends Button {
+        public CloseButton() {
+            super("Close");
+            addActionListener(new Listener());
+        }
+
+        class Listener implements ActionListener {
+            public void actionPerformed(ActionEvent e) {
+                close();
+            }
+        }
+    }
+
+    /**
+     * Reset button.
+     */
+    class ResetButton extends Button {
+        public ResetButton() {
+            super("Reset");
+        }
+
+        class Listener implements ActionListener {
+            public void actionPerformed(ActionEvent e) {
+                // Reset the challenge
+            }
+        }
+    }
+
+    /**
+     * This class will create a text area.
+     */
+    class TextAreaChallenge extends JTextArea {
+        public TextAreaChallenge(String text) {
+            super(text);
+            setLineWrap(true);
+            setWrapStyleWord(true);
+            setOpaque(false);
+            setEditable(false);
+            setFocusable(false);
+        }
     }
 }

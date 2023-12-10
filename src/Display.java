@@ -314,7 +314,7 @@ public class Display {
 
         // Credit panel.
         CustomTextArea creditLabel = new CustomTextArea(credit);
-        creditLabel.setFont(new Font("Verdana", Font.PLAIN, 11));
+        creditLabel.setFont(new Font("Verdana", Font.PLAIN, 9));
 
         // Add exit button.
         footerPanel.add(new ExitButton(), gbcButton);
@@ -366,8 +366,8 @@ public class Display {
 
             // Implement MouseListener methods
             public void mouseClicked(MouseEvent e) {
-                if (challengeDisplay != null) {
-                    String title = "Close Challenge";
+                if (challengeDisplay != null && challengeDisplay.getFrame() != null &&challengeDisplay.getFrame().isDisplayable()) {
+                String title = "Close Challenge";
                     String message = "You already have a challenge open.  Do you want to close it?";
                     
                     int response = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);

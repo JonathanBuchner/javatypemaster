@@ -9,10 +9,10 @@
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Parser_ChallengeResult_tests extends TestClass {
+public class Tests_Parser_ChallengeResult extends TestClass {
     public ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 
-    public Parser_ChallengeResult_tests() {
+    public Tests_Parser_ChallengeResult() {
         super("Parser Tests - ChallengeResult");
 
         // Create challenges for testing.

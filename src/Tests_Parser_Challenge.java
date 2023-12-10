@@ -16,8 +16,8 @@
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Parser_Challenge_tests extends TestClass {
-    public Parser_Challenge_tests() {
+public class Tests_Parser_Challenge extends TestClass {
+    public Tests_Parser_Challenge() {
         super("\"Parser Tests - Challenge");
     }
 

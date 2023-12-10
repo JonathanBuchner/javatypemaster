@@ -8,11 +8,11 @@
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class FileHelper_tests extends TestClass {
+public class Tests_FileHelper extends TestClass {
     private final String testFileName = Paths.get("../testData/test.md").toString();
 
 
-    public FileHelper_tests() {
+    public Tests_FileHelper() {
         super("FileReader Tests");
     }
 
