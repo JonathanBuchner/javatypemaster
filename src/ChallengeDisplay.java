@@ -48,6 +48,8 @@ public class ChallengeDisplay {
         frame.add(createHeaderPanel(), BorderLayout.NORTH);
         frame.add(createChallengePanel(challengeTextDisplay), BorderLayout.CENTER);
         frame.add(createFooterPanel(), BorderLayout.SOUTH);
+
+        frame.pack();
         frame.setVisible(true);
     }
 
@@ -159,9 +161,35 @@ public class ChallengeDisplay {
      * @return The footer panel.
      */
     private JPanel createFooterPanel() {
+        JPanel footer = new JPanel();
+        footer.setLayout(new BoxLayout(footer, BoxLayout.Y_AXIS));
+        footer.setBackground(Color.WHITE);
+        footer.setBorder(BorderFactory.createEmptyBorder(10, 200, 20, 200));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Add parts to the panel
+        // Seconds panel is created in the constructor to make sure it may be passed
+        // to the inputter.
+        JTextArea secondsPanel = createSecondsPanel();
+        
+        footer.add(secondsPanel, gbc);                 
+        footer.add(createInputter(challengeTextDisplay, secondsPanel), gbc);
+        footer.add(createButtonPanel(), gbc);
+
+        return footer;
+    }
+
+    /*
+    * Create the button panel.
+    */
+    private JPanel createButtonPanel() {
         JPanel footer = new JPanel(new FlowLayout());
         footer.setBackground(Color.WHITE);
         footer.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 10));
+
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 20, 10, 20);
@@ -171,6 +199,37 @@ public class ChallengeDisplay {
         footer.add(new CloseButton(), gbc);
 
         return footer;
+    }
+
+    /**
+     * Create seconds panel
+     * 
+     * @return The seconds panel.
+     */
+    private JTextArea createSecondsPanel() {
+        JTextArea secondsPanel = new JTextArea();
+        
+        secondsPanel.setFont(new Font("Verdana", Font.BOLD, 36));
+        secondsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        secondsPanel.setOpaque(false);
+        secondsPanel.setEditable(false);
+        secondsPanel.setFocusable(false);
+        secondsPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 10));
+        secondsPanel.setText("0");
+
+
+        return secondsPanel;
+    }
+
+    /**
+     * Create the inputter.
+     * 
+     * @return The inputter.
+     */
+    private Inputter createInputter(ChallengeTextDisplay challenge, JTextArea secondsPanel) {
+        Inputter inputter = new Inputter(challenge, secondsPanel);
+
+        return inputter;
     }
 
     // Getters

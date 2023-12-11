@@ -55,7 +55,7 @@ public class ChallengeTextDisplay {
 
                     // If there are three or more spaces add a tab.
                     if (i + 4 < line.length() && line.substring(i, i + 4 ).equals("    ")) {
-                        wordRow.add(new Word("\t", true));
+                        wordRow.add(new Word("\t", true, true));
                         i += 3;
                     }
                 }

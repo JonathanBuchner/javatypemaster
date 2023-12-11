@@ -3,20 +3,28 @@
  * 
  * This class is used to represent a word in the text of a challenge.
  * 
- * @author Jonathan Buchner Dec 2023.
+ * author Jonathan Buchner Dec 2023.
  */
-
 import java.awt.*;
 import javax.swing.*;
 
 class Word extends JLabel {
     private String word;
     private boolean skip;
+    private WordState state;
 
+    /*
+     * Default constructor.
+     */
     public Word() {
-        setFont(new Font("Verdana", Font.PLAIN, 11));
+        setFont(new Font("Verdana", Font.PLAIN, 15));
     }
 
+    /*
+     * Constructor.
+     * 
+     * @param word The word.
+     */
     public Word(String word) {
         this();
         this.setText(word);
@@ -24,17 +32,60 @@ class Word extends JLabel {
         this.skip = false;
     }
 
+    /*
+     * Constructor.
+     * 
+     * @param word The word.
+     * @param skip The skip.
+     */
     public Word(String word, boolean skip) {
         this(word);
         this.skip = skip;
     }
 
-    public void setCorrect() {
-        this.setBackground(Color.GREEN);
+    /*
+     * Constructor.
+     * 
+     * @param word The word.
+     * @param skip The skip.
+     * @param isTab The isTab.
+     */
+    public Word(String word, boolean skip, boolean isTab) {
+        this("    ", skip);
     }
 
-    public void setIncorrect() {
-        this.setBackground(Color.RED);
+    /* 
+     * Sets the color based on the state.
+     */
+    public void setColor() {
+        if (this.state == WordState.COMPLETE) {
+            this.setCorrect();
+        } else if (this.state == WordState.INCORRECT) {
+            this.setIncorrect();
+        } else {
+            this.setIncomplete();
+        }
+    }
+
+    /**
+     * Set correct color.
+     */
+    private void setCorrect() {
+        this.setForeground(new Color(0, 163, 108));
+    }
+
+    /**
+     * Set incomplete color.
+     */
+    private void setIncomplete() {
+        this.setForeground(Color.BLUE);
+    }
+
+    /**
+     * Set incorrect color.
+     */
+    private void setIncorrect() {
+        this.setForeground(Color.RED);
     }
 
     // Getters
@@ -57,6 +108,15 @@ class Word extends JLabel {
         return skip;
     }
 
+    /**
+     * Get the state.
+     * 
+     * @return The state.
+     */
+    public WordState getState() {
+        return state;
+    }
+
     // Setters
 
     /**
@@ -76,5 +136,15 @@ class Word extends JLabel {
      */
     public void setSkip(boolean skip) {
         this.skip = skip;
+    }
+
+    /**
+     * Set the state.
+     * 
+     * @param state
+     */
+    public void setState(WordState state) {
+        this.state = state;
+        this.setColor();
     }
 }
