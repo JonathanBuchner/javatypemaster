@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class GameManager {
-    private final String challengeFilesPath = "../data/challenges/";
-    private final String challengeResultsPath = "../data/data.csv";
+    private static final String challengeFilesPath = "../data/challenges/";
+    private static final String challengeResultsPath = "../data/data.csv";
 
     private Parser parser;
     private MusicPlayer musicPlayer;
@@ -26,9 +26,13 @@ public class GameManager {
      * Default constructor.
      */
     public GameManager() { 
-        parser = new Parser();
-        musicPlayer = new MusicPlayer();
-        display = new Display();
+        try {
+            parser = new Parser();
+            musicPlayer = new MusicPlayer();
+            display = new Display();
+        } catch (Exception e) {
+            ExceptionHandler.handleFatelExceptions(e, "Failed to initialize game.  Contact game administrator.");
+        }
     }
 
     /**
@@ -36,27 +40,24 @@ public class GameManager {
      */
     public void begin() {
 
-        // // Introduce the game
-        // int agreement = display.introduceGame();
+        // Introduce the game
+        int agreement = display.introduceGame();
 
-        // // Close game if user does not agree to terms.
-        // if (agreement != JOptionPane.YES_OPTION) {
-        //     display.informMustAgree();
-        //     System.exit(0);
-        // }
+        // Close game if user does not agree to terms.
+        if (agreement != JOptionPane.YES_OPTION) {
+            display.informMustAgree();
+            System.exit(0);
+        }
 
-        // // Get the user's name.
-        // firstName = display.getFirstName();
-        // lastName = display.getLastName();
+        // Get the user's name.
+        firstName = playerNameFormatter(display.getFirstName());
+        lastName = playerNameFormatter(display.getLastName());
 
-        // // Close game if user does not enter a name.
-        // if (firstName.isEmpty() || lastName.isEmpty()) {
-        //     display.informMustSupplyName();
-        //     System.exit(0);
-        // }
-
-        firstName = "Jonathan";
-        lastName = "Buchner";
+        // Close game if user does not enter a name.
+        if (firstName.isEmpty() || lastName.isEmpty() || firstName.length() < 2 || lastName.length() < 2) {
+            display.informMustSupplyName();
+            System.exit(0);
+        }
 
         // Get the challenges.
         try {
@@ -66,9 +67,7 @@ public class GameManager {
                 throw new Exception("No challenges found.");
             }
         } catch (Exception e) {
-            System.out.println("Failed to populate challenges.");
-            System.out.println("Error: " + e.getMessage());
-            System.exit(0);
+            ExceptionHandler.handleFatelExceptions(e,"Failed to populate challenges.  There may be a problem with one or more challenge files or the challenge file pathing.");
         }
 
         // Get the challenge results.
@@ -76,25 +75,47 @@ public class GameManager {
             ArrayList<String> challengeResultFileContents = FileHelper.readFile(challengeResultsPath);
             challengeResults = parser.parseChallengeResult(challengeResultFileContents, challenges);
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            ExceptionHandler.handleFatelExceptions(e,"Failed to populate challenge results.  There may be a problem with the challenge results file or the challenge results file pathing.");
         }
 
         // Get the high scores.
         try {
             parser.setHighScores(challengeResults, challenges, firstName, lastName);
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            ExceptionHandler.handleFatelExceptions(e,"Failed to set high scores.  There may be a problem with the challenge or data files.");
         }
 
-        // Play the intro music.
-        // musicPlayer.playIntro();
+        try {
+            // Play the intro music.
+            musicPlayer.playIntro();
 
-        // Display the main menu.
-        display.initialize(challenges, firstName, lastName);
+            // Display the main menu.
+            display.initialize(challenges, firstName, lastName);
+        } catch (Exception e) {
+            ExceptionHandler.handleFatelExceptions(e,"Failed to initialize game.  Contact game administrator.");
+        }
     }
 
 
     // Getters
+
+    /**
+     * Get challenge file path
+     * 
+     * @return The challenge file path.
+     */
+    public static String getChallengeFilePath() {
+        return challengeFilesPath;
+    }
+
+    /*
+     * Get challenge results path
+     * 
+     * @return The challenge results path.
+     */
+    public static String getChallengeResultsPath() {
+        return challengeResultsPath;
+    }
 
     /**
      * Get the challenges.
@@ -121,24 +142,6 @@ public class GameManager {
      */
     public Parser getParser() {
         return parser;
-    }
-
-    /**
-     * Get the challenge files path.
-     * 
-     * @return The challenge files path.
-     */
-    public String getChallengeFilesPath() {
-        return challengeFilesPath;
-    }
-
-    /**
-     * Get the challenge results path.
-     * 
-     * @return The challenge results path.
-     */
-    public String getChallengeResultsPath() {
-        return challengeResultsPath;
     }
 
     /**
@@ -233,10 +236,7 @@ public class GameManager {
         return challenges;
     }
 
-    /**
-     * Get the high scores.
-     * 
-     * @return The high scores.
-     */
-    
+    private String playerNameFormatter(String name) {
+        return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+    }
 }

@@ -6,5 +6,5 @@
  * author Jonathan Buchner Dec 2023.
  */
 enum WordState {
-    COMPLETE, INCORRECT, INCOMPLETE
+    COMPLETE, INCORRECT, IN_PROGRESS, NOT_STARTED
 }

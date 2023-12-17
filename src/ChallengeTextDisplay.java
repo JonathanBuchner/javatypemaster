@@ -1,7 +1,7 @@
 /**
  * ChallengeTextDisplay.java
  * 
- * This class is used to compare user inputted text to the correct text.
+ * This class is used to format the challenge text into typable text.
  * 
  * Note: This class went through several iterations. Figuring out that I wanted
  * to use a rows of JPanel to display panel rather than a string was the key.

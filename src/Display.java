@@ -1,7 +1,8 @@
 /**
  * Display.java
  * 
- * This class will handle the display of the program.  It will create the main window.
+ * This class handles the display elements of the program.  It will create the main window and prompts for the user.
+ * 
  * 
  * @author Jonathan Buchner Nov 2023.
  * 
@@ -21,6 +22,10 @@ import java.util.ArrayList;
 public class Display {
     private JFrame frame;
     private ChallengeDisplay challengeDisplay;
+    private ArrayList<Challenge> challenges;
+    private String firstName;
+    private String lastName;
+    private JPanel center;
     
     /**
      * Default constructor.
@@ -35,12 +40,12 @@ public class Display {
      * @return agreement
      */
     public int introduceGame() {
-        String message = "Welcome to Master Typer.\n\n" +
+        String message = "Welcome to TypeMaster.\n\n" +
             "You will be presented with a java typing challenges.  Select a challenge and try to get the best score!\n\n" +
-            "Master typer stores your typing results locally on this computer.\n\n" +
+            "TypeMaster stores your typing results locally on this computer.\n\n" +
             "Do you agree to play?";
 
-        return JOptionPane.showConfirmDialog(null, message, "Master Typer", JOptionPane.YES_NO_OPTION);
+        return JOptionPane.showConfirmDialog(null, message, "TypeMaster", JOptionPane.YES_NO_OPTION);
     }
 
     /**
@@ -73,28 +78,32 @@ public class Display {
      * Warn the user that a failure to supply a name will not allow them to play.
      */
     public void informMustSupplyName() {
-        JOptionPane.showMessageDialog(null, "You must supply a first and last name to play");
+        JOptionPane.showMessageDialog(null, "You must supply a first and last name that are at least two characters to play");
     }
 
     /**
      * This method will create the main window.
      */
-    public void initialize(ArrayList<Challenge> challenges, String firstName, String lastName) {    
-        frame.setTitle("Master Typer");
+    public void initialize(ArrayList<Challenge> challenges, String firstName, String lastName) {   
+        this.challenges = challenges;
+        this.firstName = firstName;
+        this.lastName = lastName;
+
+        frame.setTitle("TypeMaster");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(900, 700));
         frame.setLayout (new BorderLayout());
 
         // Set english strings.
-        String title = "Master Typer";
+        String title = "TypeMaster";
         String tagTop = "Become a master typer and master computer science!";
         String challengeTitle = "Challenges";
-        String warning = "Master typer stores your typing results locally on this computer. An updated version of this program may delete all previous data and ask for permission to collect future typing data for comparing student typing speeds to class performance.";
+        String warning = "TypeMaster stores your typing results locally on this computer. An updated version of this program may delete all previous data and ask for permission to collect future typing data for comparing student typing speeds to class performance.";
         String credit = "Created by prospective graduate student Jonathan Buchner during fall term 2023.";
 
         // Get panels
         JPanel header = createHeaderPanel(title, tagTop);
-        JPanel center = createCenterPanel(challengeTitle, challenges, firstName, lastName);
+        center = createCenterPanel(challengeTitle, challenges, firstName, lastName);
         JPanel footer = createFooterPanel(warning, credit);
         
         // Add panels to the display.
@@ -103,6 +112,20 @@ public class Display {
         frame.add(footer, BorderLayout.SOUTH);
 
         frame.setVisible(true);
+    }
+
+    /**
+     * This method will update the center panel.
+     * 
+     */
+    public void update() {
+        frame.remove(center);
+
+        // Create new panel
+        center = createCenterPanel("Challenges",challenges, firstName, lastName);
+        frame.getContentPane().add(center, BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
     }
 
     /**
@@ -140,8 +163,7 @@ public class Display {
      * @param image The image to display.
      * @return The header image.
      */
-    private JButton getHeaderImage(String image)
-    {
+    private JButton getHeaderImage(String image) {
         JButton button = new JButton();
         button.setIcon(new ImageIcon(getClass().getResource(image)));
         button.setBorderPainted(false);
@@ -196,6 +218,7 @@ public class Display {
      * @return The center panel.
      */
     private JPanel createCenterPanel(String challengeTitle, ArrayList<Challenge> challenges, String firstName, String lastName) {
+
         // Create the center panel.
         JPanel center = new JPanel(new GridBagLayout());
         center.setBackground(Color.WHITE);
@@ -268,8 +291,8 @@ public class Display {
         // Add rows.
         row.add(new CustomTextAreaChallenge(challenge)); // This is needed to make the challenge open.
         row.add(new CustomTextArea(highScore.getHighFirstName()));
-        row.add(new CustomTextArea(theHighScore));       
-        row.add(new CustomTextArea(yourHighScore));
+        row.add(new CustomTextAreaScore(theHighScore));       
+        row.add(new CustomTextAreaScore(yourHighScore));
 
         return row;
     }
@@ -342,6 +365,27 @@ public class Display {
         }
     }
 
+    /**
+     * CustomTextAreaScore.java
+     * 
+     * This class will create a custom text area for the scores.
+     */
+    class CustomTextAreaScore extends CustomTextArea {
+        public CustomTextAreaScore(String text) {
+            super(text);
+            
+            try {
+                int number = Integer.parseInt(text);
+                text = String.format("%.1f", number / 1000.0) + " seconds";;
+            } catch (NumberFormatException e) {
+                text = "--";
+            }
+
+            setText(text);
+            setFont(new Font("Verdana", Font.PLAIN, 12));
+        }
+    }
+
     class CustomTextAreaRowHeader extends CustomTextArea {
         public CustomTextAreaRowHeader(String text) {
             super(text);
@@ -379,7 +423,7 @@ public class Display {
                     challengeDisplay.close();
                 }
 
-                challengeDisplay = new ChallengeDisplay(challenge);
+                challengeDisplay = new ChallengeDisplay(Display.this, challenge);
                 challengeDisplay.initialize();
             }
             public void mousePressed(MouseEvent e) {}

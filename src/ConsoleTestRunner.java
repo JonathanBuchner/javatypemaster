@@ -3,7 +3,7 @@
  * 
  * This class is used write test to the console. I wanted to design a test runner
  * that would find all my test methods for a class and run them, so I explored
- * using reflection to look up the methods that had a test return type and 
+ * using reflection to look up the methods that had a test return type. 
  * 
  * @author Jonathan Buchner Nov 2023.
  * 

@@ -8,6 +8,7 @@
  * Note: I borrowed from my own work in CaesarCipher.java and ExamAnalysis.java.
  */
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
@@ -67,7 +68,8 @@ public final class FileHelper {
      */
     public static void writeLineToFile(String filePath, String line) throws Exception {
         File file = getFile(filePath);
-        PrintWriter writer = new PrintWriter(file);
+        FileWriter fileWriter = new FileWriter(file, true);
+        PrintWriter writer = new PrintWriter(fileWriter);
         
         writer.println(line);
         

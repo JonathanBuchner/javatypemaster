@@ -2,7 +2,7 @@
 /**
  * MusicPlayer.java
  * 
- * This class will manage the music.
+ * This class will manage playing the intro music.
  * 
  * @author Jonathan Buchner Nov 2023.
  */

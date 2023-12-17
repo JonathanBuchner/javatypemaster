@@ -5,7 +5,11 @@
  * test classes.
  * 
  * @author Jonathan Buchner Nov 2023.
+ * 
+ * Note: This class was probably not necessary in hindsight, but I expected to
+ * use this throughout all my test classes.
  */
+
 public final class Assert {
     /**
      * This method tests equality between two strings.
@@ -32,7 +36,7 @@ public final class Assert {
     }
 
     /**
-     * This method tests equality between two strings.
+     * This method tests that two strings.are not equal.
      * 
      * @param expected The expected response.
      * @param actual The actual response.      

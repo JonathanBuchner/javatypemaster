@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * tests_ChallengeDisplay.java
+ * Tests_ChallengeDisplay.java
  * 
  * This class is used to test the ChallengeDisplay class.
  * 
@@ -40,9 +40,9 @@ public class Tests_ChallengeTextDisplay extends TestClass {
 
         // Word row 3
         ArrayList<Word> wordRow3 = wordRows.get(2);
-        test.setAdditionalResult(wordRow3.get(0).getWord().equals("\t"));
+        test.setAdditionalResult(wordRow3.get(0).getWord().equals("    "));
         test.setAdditionalResult(wordRow3.get(1).getWord().equals("with"));
-        test.setAdditionalResult(wordRow3.get(2).getWord().equals("\t"));
+        test.setAdditionalResult(wordRow3.get(2).getWord().equals("    "));
         test.setAdditionalResult(wordRow3.get(3).getWord().equals("spaces"));
         test.setAdditionalResult(wordRow3.get(4).getWord().equals("(string[]"));
         test.setAdditionalResult(wordRow3.get(5).getWord().equals("args)"));
@@ -50,8 +50,8 @@ public class Tests_ChallengeTextDisplay extends TestClass {
 
         // Word row 4
         ArrayList<Word> wordRow4 = wordRows.get(3);
-        test.setAdditionalResult(wordRow4.get(0).getWord().equals("\t"));
-        test.setAdditionalResult(wordRow4.get(1).getWord().equals("\t"));
+        test.setAdditionalResult(wordRow4.get(0).getWord().equals("    "));
+        test.setAdditionalResult(wordRow4.get(1).getWord().equals("    "));
         test.setAdditionalResult(wordRow4.get(2).getWord().equals("System.out.println('Does"));
         test.setAdditionalResult(wordRow4.get(3).getWord().equals("this"));
         test.setAdditionalResult(wordRow4.get(4).getWord().equals("work');"));

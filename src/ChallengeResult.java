@@ -1,22 +1,23 @@
 /**
  * ChallengeResult.java
  * 
- * This class is used to store the result of a challenge.
+ * This class is used to store the result of a challenge. Each challenge result
+ * in the data.csv file is loaded into a ChallengeResult object at runtime.
  * 
  * @author Jonathan Buchner Nov 2023.
  * 
  * Notes: I originally wanted to print a comma delimited file, but I realized
  * a comma was not a good deliminator.  I then decided as an odd string as 
- * a deliminator.  I chose ",^-" because it is unlikely to be used in a project.
+ * a deliminator.  I chose "~!~" because it is unlikely to be used in a project.
  * There are better approaches, but I thought this one worked in this case.
  */
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
 public class ChallengeResult {
     private static final String deliminator = "~!~"; // ,^- 
+    
     private UUID id;
     private Challenge challenge;
     private LocalDateTime dateCompleted;
@@ -47,6 +48,20 @@ public class ChallengeResult {
         this.firstName = firstName;
         this.lastName = lastName;
         this.secondsToComplete = secondsToComplete;
+    }
+
+    /**
+     * This method returns a string representation of the challenge result.
+     * 
+     * @return A string representation of the challenge result.
+     */
+    public String toString() {
+        return this.id.toString() + ChallengeResult.deliminator +
+            this.challenge.getId().toString() + ChallengeResult.deliminator +
+            this.dateCompleted.toString() + ChallengeResult.deliminator +
+            this.firstName + ChallengeResult.deliminator +
+            this.lastName + ChallengeResult.deliminator +
+            this.secondsToComplete;
     }
 
     // Getters
@@ -125,6 +140,13 @@ public class ChallengeResult {
     }
 
     /**
+     * Sets a random UUID of the challenge result.
+     */
+    public void setId() {
+        this.id = UUID.randomUUID();
+    }
+
+    /**
      * Sets the challenge that was completed.
      * 
      * @param challenge The challenge that was completed.
@@ -167,20 +189,5 @@ public class ChallengeResult {
      */
     public void setSecondsToComplete(int secondsToComplete) {
         this.secondsToComplete = secondsToComplete;
-    }
-
-    /**
-     * This method returns a string representation of the challenge result.
-     * 
-     * @return A string representation of the challenge result.
-     */
-    public String toString() {
-        return ChallengeResult.deliminator +
-            this.id.toString() + ChallengeResult.deliminator +
-            this.challenge.getId().toString() + ChallengeResult.deliminator +
-            this.dateCompleted.toString() + ChallengeResult.deliminator +
-            this.firstName + ChallengeResult.deliminator +
-            this.lastName + ChallengeResult.deliminator +
-            this.secondsToComplete;
     }
 }

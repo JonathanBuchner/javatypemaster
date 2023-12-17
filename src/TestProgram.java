@@ -1,3 +1,8 @@
+/**
+ * TestProgram.java
+ * 
+ * This class is the entry point for the test program.
+ */
 public class TestProgram {
 
     public static void main(String[] args) {
@@ -8,6 +13,11 @@ public class TestProgram {
         Tests(testRunner);
     }
 
+    /**
+     * This method runs the tests.
+     * 
+     * @param testRunner The test runner to use.
+     */
     private static void Tests(ITestRunner testRunner) {
         testRunner.Test(Tests_Dummy.class);
         testRunner.Test(Tests_FileHelper.class);

@@ -1,5 +1,5 @@
 /**
- * FileReader_tests.java
+ * Tests_FileReader.java
  * 
  * This class is used to test the FileReader class.
  * 

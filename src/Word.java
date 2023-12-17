@@ -18,6 +18,8 @@ class Word extends JLabel {
      */
     public Word() {
         setFont(new Font("Verdana", Font.PLAIN, 15));
+        this.state = WordState.NOT_STARTED;
+        setForeground(Color.BLACK);
     }
 
     /*
@@ -62,8 +64,10 @@ class Word extends JLabel {
             this.setCorrect();
         } else if (this.state == WordState.INCORRECT) {
             this.setIncorrect();
+        } else if (this.state == WordState.IN_PROGRESS) {
+            this.setInprogress();
         } else {
-            this.setIncomplete();
+            this.setNotStarted();
         }
     }
 
@@ -77,7 +81,7 @@ class Word extends JLabel {
     /**
      * Set incomplete color.
      */
-    private void setIncomplete() {
+    private void setInprogress() {
         this.setForeground(Color.BLUE);
     }
 
@@ -86,6 +90,13 @@ class Word extends JLabel {
      */
     private void setIncorrect() {
         this.setForeground(Color.RED);
+    }
+
+    /**
+     * Set not started color.
+     */
+    private void setNotStarted() {
+        this.setForeground(Color.BLACK);
     }
 
     // Getters

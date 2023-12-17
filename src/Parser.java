@@ -1,5 +1,5 @@
 /**
- * ParserHelper.java
+ * Parser.java
  * 
  * Contains methods for parsing the data file or the challenge files.
  * 
@@ -101,7 +101,7 @@ public final class Parser {
 
         // Get a high object for each challenge that is is put in a hashmap.
         for (Challenge challenge : challenges) {
-            highScores.put(challenge.getId(), new HighScore(challenge.getId(), challenge.getName(), "*NEW*", 0, firstName, 0));
+            highScores.put(challenge.getId(), new HighScore(challenge.getId(), challenge.getName(), "*NEW*", 0, firstName, lastName, 0));
         }
 
         // Update the high scores with information from the challenge results.
@@ -154,7 +154,7 @@ public final class Parser {
         
         // Date completed. I hade help from chat gpt to get this to work.
         String dateString = fields[2];
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
         LocalDateTime dateCompleted = LocalDateTime.parse(dateString, formatter);
         challengeResult.setDateCompleted(dateCompleted);
 

@@ -1,5 +1,5 @@
 /**
- * Parser_ChallengeResult_tests.java
+ * Tests_Parser_ChallengeResult.java
  * 
  * Contains tests for the ParserHelper class.
  * 
@@ -49,7 +49,7 @@ public class Tests_Parser_ChallengeResult extends TestClass {
         // Setting up challenge result text.
         String id = "123e4567-e89b-12d3-a456-426614174010";
         String challenge = "123e4567-e89b-12d3-a456-426614174000"; // This is the id of challenge 1.
-        String dateCompleted = "2023-11-27 15:30:45";
+        String dateCompleted = "2023-12-11T20:44:17.915";
         String firstName = "UserFirstName";
         String lastName = "UserLastName";
         String secondsToComplete = "60";

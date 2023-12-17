@@ -1,3 +1,8 @@
+/**
+ * TestClass.java
+ * 
+ * This class is the base class for all test classes.
+ */
 public abstract class TestClass {
     public String description;
 

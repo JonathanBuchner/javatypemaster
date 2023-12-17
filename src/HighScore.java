@@ -3,7 +3,9 @@ import java.util.UUID;
 /**
  * HighScore.java
  * 
- * This class will get the high score functionality of the program.
+ * This class will hold and retrieve the high score.
+ * 
+ * @author Jonathan Buchner Nov 2023.
  */
 
 public class HighScore {
@@ -12,6 +14,7 @@ public class HighScore {
     private String highFirstName;
     private int highScore;
     private String yourFirstName;
+    private String yourLastName;
     private int yourHighScore;
 
     /**
@@ -29,13 +32,14 @@ public class HighScore {
      * @param yourFirstName Your first name.
      * @param yourHighScore Your high score.
      */
-    public HighScore(UUID id, String challengeName, String highFirstName, int highScore, String yourFirstName, int yourHighScore) {
+    public HighScore(UUID id, String challengeName, String highFirstName, int highScore, String yourFirstName, String yourLastName, int yourHighScore) {
         this();
         this.id = id;
         this.challengeName = challengeName;
         this.highFirstName = highFirstName;
         this.highScore = highScore;
         this.yourFirstName = yourFirstName;
+        this.yourLastName = yourLastName;
         this.yourHighScore = yourHighScore;
     }
 
@@ -84,6 +88,15 @@ public class HighScore {
      */
     public String getYourFirstName() {
         return yourFirstName;
+    }
+
+    /**
+     * Gets your last name.
+     * 
+     * @return Your last name.
+     */
+    public String getYourLastName() {
+        return yourLastName;
     }
 
     /**
@@ -143,6 +156,15 @@ public class HighScore {
     }
 
     /**
+     * set your last name
+     * 
+     * @param String yourLastName
+     */
+    public void setYourLastName(String yourLastName) {
+        this.yourLastName = yourLastName;
+    }
+
+    /**
      * Sets your high score.
      * 
      * @param yourHighScore Your high score.
@@ -150,4 +172,6 @@ public class HighScore {
     public void setYourHighScore(int yourHighScore) {
         this.yourHighScore = yourHighScore;
     }
+
+
 }

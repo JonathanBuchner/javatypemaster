@@ -1,5 +1,5 @@
 /**
- * Test.java
+ * TestException.java
  * 
  * Returned by tests to indicate the result of a test.
  * 

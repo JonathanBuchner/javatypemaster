@@ -1,19 +1,21 @@
 /**
  * Inputter.java
  * 
- * This class will take the text from the user and update the challenge text display and 
- * will communicate when the system is complete.
+ * This class will listen to the text inputted by the user and update the challenge text trigger the completion of a challenge. 
  * 
  * @author Jonathan Buchner Dec 2023.
  */
 
 import java.time.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.event.*;
 
  public class Inputter extends JTextField {
+    // The challenge display is needed to update the high scores and update the display.
+    private ChallengeDisplay challengeDisplay;
     private ChallengeTextDisplay challengeTextDisplay;
-    private JTextArea secondsPanel;
+    private JTextField secondsPanel;
     private int column;
     private int row;
     private LocalDateTime startTime;
@@ -37,10 +39,37 @@ import java.awt.event.*;
      * 
      * @param challengeTextDisplay The challenge text display.
      */
-    public Inputter(ChallengeTextDisplay challengeTextDisplay, JTextArea secondsPanel) {
+    public Inputter(ChallengeDisplay challengeDisplay) {
         this();
-        this.challengeTextDisplay = challengeTextDisplay;
-        this.secondsPanel = secondsPanel;
+        this.challengeDisplay = challengeDisplay;
+        this.challengeTextDisplay = challengeDisplay.getChallengeTextDisplay();
+        this.secondsPanel = challengeDisplay.getSecondsPanel();
+
+        // Set the first word.
+        findValidWord();
+    }
+
+    /**
+     * Reset the challenge.
+     */
+    public void reset() {
+        this.column = 0;
+        this.row = 0;
+        if (this.timer != null) {
+            this.timer.stop();
+        }
+        this.timer = null;
+        this.startTime = null;
+        this.endTime = null;
+        this.secondsPanel.setText("Lets go!");
+        setText("");
+
+        // Reset the word states.
+        for (ArrayList<Word> wordRow : challengeTextDisplay.getWordRows()) {
+            for (Word word : wordRow) {
+                word.setState(WordState.NOT_STARTED);
+            }
+        }
 
         // Set the first word.
         findValidWord();
@@ -93,7 +122,9 @@ import java.awt.event.*;
      * Start word.
      */
     private void findValidWord() {
-        checkForWin();
+        if (checkForWin()) {
+            return;
+        }
 
         // if column is greater than the row length, move to the next row. Note that this works on empty rows.
         if (column >= challengeTextDisplay.getWordRows().get(row).size()) {
@@ -112,7 +143,7 @@ import java.awt.event.*;
         }
 
         setText("");
-        getCurrentWord().setState(WordState.INCOMPLETE);
+        getCurrentWord().setState(WordState.IN_PROGRESS);
     }
 
     /**
@@ -125,19 +156,23 @@ import java.awt.event.*;
 
     /**
      * Check for win.
+     * 
+     * @return True if the challenge is complete.
      */
-    public void checkForWin() {
+    public boolean checkForWin() {
         if (isComplete()) {
-            end();
-            JOptionPane.showMessageDialog(null, "You completed the challenge in " + getDuration() + " milliseconds.");
+            endWin();
             
+            return true;
         }
+
+        return false;
     }
 
     /**
      * Mark if the current input is a substring of the current word.
      */
-    private void setWordState() {
+    private void setWordState(KeyEvent e) {
         String text = getText();
         Word word = getCurrentWord();
 
@@ -150,7 +185,7 @@ import java.awt.event.*;
         }
 
         // If the word is complete, then move to the next word.
-        if (text.equals(word.getWord() + " ") || text.equals(word.getWord() + "\n")) {
+        if (text.equals(word.getWord() + " ") || e.getKeyCode() == KeyEvent.VK_ENTER) {
             word.setState(WordState.COMPLETE);
             nextWord();
 
@@ -159,7 +194,7 @@ import java.awt.event.*;
         
         // If the test starts with the current word, then mark it as incomplete.
         if (word.getWord().startsWith(text)) {
-            word.setState(WordState.INCOMPLETE);
+            word.setState(WordState.IN_PROGRESS);
 
             return;
         } 
@@ -173,25 +208,42 @@ import java.awt.event.*;
      */
     private void start() {
         this.startTime = LocalDateTime.now();
-        this.timer = new Timer(1000, new ActionListener() {
+        this.timer = new Timer(100, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Duration duration = Duration.between(startTime, LocalDateTime.now());
-                int seconds = (int) duration.getSeconds();
                 
-                secondsPanel.setText(String.valueOf(seconds));
+                if (duration.toMillis() > 600000) {
+                    timer.stop();
+                    JOptionPane.showMessageDialog(null, "You have reached the max time of 10 minutes.");
+
+                }
+
+                if (secondsPanel != null) {
+                    secondsPanel.setText(String.format("%.1f", duration.toMillis() / 1000.0));
+                } 
             }
         });
+        this.timer.start();
     }
 
     /**
      * End the challenge.
      */
-    private void end() {
+    private void endWin() {
         this.endTime = LocalDateTime.now();
         setText("");
+        
         if (this.timer != null) {
             this.timer.stop();
         }
+        
+        if (this.startTime != null && this.endTime != null) {
+            Duration duration = Duration.between(startTime, endTime);
+            this.challengeDisplay.update((int) duration.toMillis());
+        }
+
+        reset();
+
     }
 
     // Getters
@@ -244,7 +296,7 @@ import java.awt.event.*;
     /**
      * Get the seconds panel.
      */
-    public JTextArea getSecondsPanel() {
+    public JTextField getSecondsPanel() {
         return this.secondsPanel;
     }
 
@@ -306,7 +358,7 @@ import java.awt.event.*;
     /**
      * Set the seconds panel.
      */
-    public void setSecondsPanel(JTextArea secondsPanel) {
+    public void setSecondsPanel(JTextField secondsPanel) {
         this.secondsPanel = secondsPanel;
     }
 
@@ -326,7 +378,7 @@ import java.awt.event.*;
      */
     class ProcessKeyPress extends KeyAdapter {
         public void keyReleased(KeyEvent e) {
-            setWordState();
+            setWordState(e);
         }
     }
 }

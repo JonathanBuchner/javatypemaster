@@ -1,5 +1,5 @@
 /**
- * Test.java
+ * TestForEquality.java
  * 
  * Returned by tests to indicate the result of a test.
  * 

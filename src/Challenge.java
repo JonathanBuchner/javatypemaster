@@ -1,7 +1,8 @@
 /**
  * Challenge.java
  * 
- * Represents a challenge.
+ * Challenge object. Challenges are stored as markdown files and are loaded into
+ * this object upon the start of the game.
  * 
  * @author Jonathan Buchner Nov 2023.
  */
@@ -34,6 +35,68 @@ public class Challenge {
         this.name = name;
         this.description = description;
         this.text = text;
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param id The UUID of the challenge.
+     * @param name The name of the challenge.
+     * @param description The description of the challenge.
+     * @param text The text of the challenge.
+     * @param highScore The high score of the challenge.
+     */
+    public Challenge(UUID id, String name, String description, String text, HighScore highScore) {
+        this(id, name, description, text);
+        this.highScore = highScore;
+    }
+
+    /**
+     * Checks if the UUID of the challenge is set.
+     * 
+     * @return True if the UUID of the challenge is set, false otherwise.
+     */
+    public boolean idIsSet() {
+        return id != null;
+    }
+
+    /**
+     * Checks if the name of the challenge is set.
+     * 
+     * @return True if the name of the challenge is set, false otherwise.
+     */ 
+    public boolean nameIsSet() {
+        return name != null;
+    }
+
+    /**
+     * Checks if the description of the challenge is set.
+     * 
+     * @return True if the description of the challenge is set, false otherwise.
+     */
+    public boolean descriptionIsSet() {
+        return description != null;
+    }
+
+    /**
+     * Checks if the text of the challenge is set.
+     * 
+     * @return True if the text of the challenge is set, false otherwise.
+     */
+    public boolean textIsSet() {
+        return text != null;
+    }
+
+    /**
+     * Checks if the challenge is valid.
+     * 
+     * @return True if the challenge is valid, false otherwise.
+     */
+    public boolean isValid() {
+        return idIsSet() 
+            && nameIsSet() 
+            && descriptionIsSet() 
+            && textIsSet();
     }
 
     // Getters
@@ -119,57 +182,7 @@ public class Challenge {
      */
     public void setText(String text) {
         this.text = text;
-    }
-
-    // Methods
-
-    /**
-     * Checks if the UUID of the challenge is set.
-     * 
-     * @return True if the UUID of the challenge is set, false otherwise.
-     */
-    public boolean idIsSet() {
-        return id != null;
-    }
-
-    /**
-     * Checks if the name of the challenge is set.
-     * 
-     * @return True if the name of the challenge is set, false otherwise.
-     */ 
-    public boolean nameIsSet() {
-        return name != null;
-    }
-
-    /**
-     * Checks if the description of the challenge is set.
-     * 
-     * @return True if the description of the challenge is set, false otherwise.
-     */
-    public boolean descriptionIsSet() {
-        return description != null;
-    }
-
-    /**
-     * Checks if the text of the challenge is set.
-     * 
-     * @return True if the text of the challenge is set, false otherwise.
-     */
-    public boolean textIsSet() {
-        return text != null;
-    }
-
-    /**
-     * Checks if the challenge is valid.
-     * 
-     * @return True if the challenge is valid, false otherwise.
-     */
-    public boolean isValid() {
-        return idIsSet() 
-            && nameIsSet() 
-            && descriptionIsSet() 
-            && textIsSet();
-    }
+    } 
 
     /**
      * Set high score

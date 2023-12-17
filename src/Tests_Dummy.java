@@ -1,5 +1,5 @@
 /**
- * Dummy_tests.java
+ * Test_Dummy.java
  * 
  * This class is used to confirm the test runner is working.
  * 
